@@ -32,19 +32,25 @@ public class Plant implements Runnable {
     }
 
     public void startPlant() {
-        plantWorkers = new Thread[5];
+        plantWorkers = new Thread[11];
         plantWorkers[0] = new Thread(this, "fetcher");
         plantWorkers[1] = new Thread(this, "peeler");
         plantWorkers[2] = new Thread(this, "squeezer");
+        plantWorkers[5] = new Thread(this, "squeezer2");
+        plantWorkers[7] = new Thread(this, "squeezer3");
         plantWorkers[3] = new Thread(this, "bottler");
+        plantWorkers[6] = new Thread(this, "bottler2");
+        plantWorkers[8] = new Thread(this, "bottler3");
         plantWorkers[4] = new Thread(this, "processor");
+        plantWorkers[9] = new Thread(this, "processor2");
+        plantWorkers[10] = new Thread(this, "processor3");
         timeToWork = true;
         for (Thread worker : plantWorkers) {
             worker.start();
         }
         System.out.println(".........................................................................");
         System.out.println(getPlantName() + "\n"
-                + "         Fetcher, Peeler, Squeezer, Bottler, and Processor are on the Clock: " + "\n"
+                + "         Fetcher, Peeler, Squeezer1-3, Bottler, and Processor are on the Clock: " + "\n"
                 + "             " + new Timestamp(new Date().getTime()));
     }
 
@@ -81,6 +87,8 @@ public class Plant implements Runnable {
                     }
                     break;
                 case "squeezer":
+                case "squeezer2":
+                case "squeezer3":
                     Orange squeezingOrange = peeled.grab();
                     if (squeezingOrange != null) {
                         squeezingOrange.runProcess();
@@ -89,6 +97,8 @@ public class Plant implements Runnable {
                     }
                     break;
                 case "bottler":
+                case "bottler2":
+                case "bottler3":
                     Orange bottlingOrange = squeezed.grab();
                     if (bottlingOrange != null) {
                         bottlingOrange.runProcess();
@@ -97,6 +107,8 @@ public class Plant implements Runnable {
                     }
                     break;
                 case "processor":
+                case "processer2":
+                case "processor3":
                     Orange processingOrange = bottled.grab();
                     if (processingOrange != null) {
                         processingOrange.runProcess();
@@ -120,15 +132,11 @@ public class Plant implements Runnable {
         return orangesSqueezed;
     }
 
-    public int getOrangesBottled() {
-        return orangesBottled;
-    }
-
     public int getProcessedOranges() {
         return orangesProcessed;
     }
 
-    public int getBottles() {
+    public int getBottlesOranges() {
         return orangesProcessed / ORANGES_PER_BOTTLE;
     }
 
@@ -141,6 +149,7 @@ public class Plant implements Runnable {
     }
 
 }
+
 
 
 
