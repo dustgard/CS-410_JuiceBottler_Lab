@@ -1,100 +1,53 @@
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class Plant{
+public class Plant implements Runnable {
     // How long do we want to run the juice processing
 
     public final int ORANGES_PER_BOTTLE = 3;
 
-    private final Thread thread;
-
+    private final String plantName;
+    private final Queue<Orange> fetched = new ConcurrentLinkedDeque<>();
+    private final Queue<Orange> peeled = new ConcurrentLinkedDeque<>();
+    private final Queue<Orange> squeezed = new ConcurrentLinkedDeque<>();
+    private final Queue<Orange> bottled = new ConcurrentLinkedDeque<>();
+    private final Queue<Orange> processed = new ConcurrentLinkedDeque<>();
     private int orangesProvided;
     private int orangesProcessed;
-    private volatile boolean timeToWork;
+    private Thread[] plantWorkers;
 
-    private final Queue<Orange> fetched = new LinkedList<>();
-    private final Queue<Orange> peeled = new LinkedList<>();
-    private final Queue<Orange> squeezed = new LinkedList<>();
-    private final Queue<Orange> bottled = new LinkedList<>();
-    private final Queue<Orange> processed = new LinkedList<>();
+    private boolean timeToWork;
 
-    private PlantWorker[] plantWorkers;
     Plant(String plant) {
         orangesProvided = 0;
         orangesProcessed = 0;
-        thread = new Thread(this, plant);
+        plantName = plant;
 
-        }
-
+    }
 
     public void startPlant() {
+        plantWorkers = new Thread[5];
+        plantWorkers[0] = new Thread(this,"fetcher");
+        plantWorkers[1] = new Thread(this,"peeler");
+        plantWorkers[2] = new Thread(this, "squeezer");
+        plantWorkers[3] = new Thread(this , "bottler");
+        plantWorkers[4] = new Thread(this,"processor");
         timeToWork = true;
-//        thread.start();
-        plantWorkers = new PlantWorker[5];
-        //possible do enumeration for worker names
-        plantWorkers[0]  = new PlantWorker("fetcher",fetched, fetched);
-        plantWorkers[1] = new PlantWorker("peeler", fetched, peeled);
-        plantWorkers[2] = new PlantWorker("squeezer", peeled, squeezed);
-        plantWorkers[3] = new PlantWorker("bottler", squeezed, bottled);
-        plantWorkers[4] = new PlantWorker("processor", bottled, processed);
-        for (PlantWorker p : plantWorkers) {
-            p.startWorker();
+        for (Thread p : plantWorkers) {
+            p.start();
         }
 
     }
-
     public void stopPlant() {
-
-        for (PlantWorker p : plantWorkers) {
-            p.stopWorker();
-        }
-
-       for (PlantWorker p : plantWorkers) {
-
-
         timeToWork = false;
-
-
-    }
-
-    public void waitToStop() {
-
-        try {
-            thread.join();
-        } catch (InterruptedException e) {
-            System.err.println(thread.getName() + " stop malfunction");
+        for (Thread worker : plantWorkers) {
+            try {
+                worker.join();
+            } catch (InterruptedException e) {
+                System.err.println(worker.getName() + " stop malfunction");
+            }
         }
     }
-
-     Give the plants time to do work
-
-
-    public void run() {
-        System.out.println(thread.getName() + " Processing oranges");
-        while (timeToWork) {
-
-        }
-        System.out.println("");
-        System.out.println("Plant out of time");
-        System.out.println(thread.getName() + " Done");
-    }
-
-    public void processEntireOrange(Orange o) {
-        while (o.getState() != Orange.State.Bottled) {
-            o.runProcess();
-        }
-        orangesProcessed++;
-    }
-
-    private static void delay(long time, String errMsg) {
-        long sleepTime = Math.max(1, time);
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException e) {
-            System.err.println(errMsg);
-        }
-    }
-
     public int getProvidedOranges() {
         return orangesProvided;
     }
@@ -107,8 +60,77 @@ public class Plant{
         return orangesProcessed / ORANGES_PER_BOTTLE;
     }
 
+    public String getPlantName() {
+        return plantName;
+    }
+
     public int getWaste() {
         return orangesProcessed % ORANGES_PER_BOTTLE;
     }
+
+    public void run() {
+
+        while(timeToWork){
+            switch (Thread.currentThread().getName()){
+                case "fetcher":
+                    Orange orange = new Orange();
+                    fetched.add(orange);
+                    orangesProvided++;
+                    break;
+                case "peeler":
+                    Orange peelingOrange = fetched.poll();
+                    if (peelingOrange != null) {
+                        peelingOrange.runProcess();
+                        peeled.add(peelingOrange);
+                    }
+                    break;
+                case "squeezer":
+                    Orange squeezingOrange = peeled.poll();
+                    if (squeezingOrange != null) {
+                        squeezingOrange.runProcess();
+                        squeezed.add(squeezingOrange);
+                    }
+                    break;
+                case "bottler":
+                    Orange bottlingOrange = squeezed.poll();
+                    if (bottlingOrange != null) {
+                        bottlingOrange.runProcess();
+                        bottled.add(bottlingOrange);
+                    }
+                    break;
+                case "processor":
+                    Orange processingOrange = bottled.poll();
+                    if (processingOrange != null) {
+                        processingOrange.runProcess();
+                        processed.add(processingOrange);
+                        orangesProcessed++;
+                    }
+                    break;
+            }
+
+        }
+
+        switch (Thread.currentThread().getName()){
+            case "fetcher":
+                System.out.println("Fetcher done");
+                break;
+            case "peeler":
+                System.out.println("Peeler done");
+                break;
+            case "squeezer":
+                System.out.println("Squeezer done");
+                break;
+            case "bottler":
+                System.out.println("Bottler done");
+                break;
+            case "processor":
+                System.out.println("Processor done");
+                break;
+        }
+
+    }
+
 }
+
+
 

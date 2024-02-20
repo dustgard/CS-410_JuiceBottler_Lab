@@ -1,5 +1,5 @@
-public class JuiceBottler{
-
+public class JuiceBottler {
+    // How long do we want to run the juice processing
     public static final long PROCESSING_TIME = 5 * 1000;
 
     private static final int NUM_PLANTS = 2;
@@ -8,7 +8,7 @@ public class JuiceBottler{
         // Startup the plants
         Plant[] plants = new Plant[NUM_PLANTS];
         for (int i = 0; i < NUM_PLANTS; i++) {
-            plants[i] = new Plant("Plant[" + i + "]");
+            plants[i] = new Plant("Plant " + i);
             plants[i].startPlant();
         }
 
@@ -18,9 +18,6 @@ public class JuiceBottler{
         // Stop the plant, and wait for it to shutdown
         for (Plant p : plants) {
             p.stopPlant();
-        }
-        for (Plant p : plants) {
-            p.waitToStop();
         }
 
         // Summarize the results
@@ -33,11 +30,11 @@ public class JuiceBottler{
             totalProcessed += p.getProcessedOranges();
             totalBottles += p.getBottles();
             totalWasted += p.getWaste();
+            System.out.println(p.getPlantName() + " Total provided/processed = " + totalProvided + "/" + totalProcessed);
+            System.out.println("Created " + totalBottles +
+                    ", wasted " + totalWasted + " oranges");
         }
-        System.out.println("Plant 1" + plants[0].getBottles());
-        System.out.println("Total provided/processed = " + totalProvided + "/" + totalProcessed);
-        System.out.println("Created " + totalBottles +
-                ", wasted " + totalWasted + " oranges");
+
     }
 
     private static void delay(long time, String errMsg) {
