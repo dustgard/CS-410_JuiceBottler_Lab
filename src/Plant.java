@@ -1,30 +1,25 @@
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Plant implements Runnable {
     // How long do we want to run the juice processing
-
     public final int ORANGES_PER_BOTTLE = 3;
-
     private final String plantName;
-    private final Queue<Orange> fetched = new ConcurrentLinkedDeque<>();
-    private final Queue<Orange> peeled = new ConcurrentLinkedDeque<>();
-    private final Queue<Orange> squeezed = new ConcurrentLinkedDeque<>();
-    private final Queue<Orange> bottled = new ConcurrentLinkedDeque<>();
-    private final Queue<Orange> processed = new ConcurrentLinkedDeque<>();
+    private final Queue<Orange> fetched = new ConcurrentLinkedQueue<>();
+    private final Queue<Orange> peeled = new ConcurrentLinkedQueue<>();
+    private final Queue<Orange> squeezed = new ConcurrentLinkedQueue<>();
+    private final Queue<Orange> bottled = new ConcurrentLinkedQueue<>();
+    private final Queue<Orange> processed = new ConcurrentLinkedQueue<>();
     private int orangesProvided;
     private int orangesProcessed;
     private Thread[] plantWorkers;
-
     private boolean timeToWork;
 
     Plant(String plant) {
         orangesProvided = 0;
         orangesProcessed = 0;
         plantName = plant;
-
     }
-
     public void startPlant() {
         plantWorkers = new Thread[5];
         plantWorkers[0] = new Thread(this,"fetcher");
@@ -35,8 +30,8 @@ public class Plant implements Runnable {
         timeToWork = true;
         for (Thread p : plantWorkers) {
             p.start();
+            System.out.println(getPlantName() + "[" + p.getName() + "]" + " Started Working");
         }
-
     }
     public void stopPlant() {
         timeToWork = false;
@@ -48,26 +43,6 @@ public class Plant implements Runnable {
             }
         }
     }
-    public int getProvidedOranges() {
-        return orangesProvided;
-    }
-
-    public int getProcessedOranges() {
-        return orangesProcessed;
-    }
-
-    public int getBottles() {
-        return orangesProcessed / ORANGES_PER_BOTTLE;
-    }
-
-    public String getPlantName() {
-        return plantName;
-    }
-
-    public int getWaste() {
-        return orangesProcessed % ORANGES_PER_BOTTLE;
-    }
-
     public void run() {
 
         while(timeToWork){
@@ -129,6 +104,26 @@ public class Plant implements Runnable {
         }
 
     }
+    public int getProvidedOranges() {
+        return orangesProvided;
+    }
+
+    public int getProcessedOranges() {
+        return orangesProcessed;
+    }
+
+    public int getBottles() {
+        return orangesProcessed / ORANGES_PER_BOTTLE;
+    }
+
+    public String getPlantName() {
+        return plantName;
+    }
+
+    public int getWaste() {
+        return orangesProcessed % ORANGES_PER_BOTTLE;
+    }
+
 
 }
 
