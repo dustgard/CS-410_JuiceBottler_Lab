@@ -20,6 +20,7 @@ public class JuiceBottler {
             p.stopPlant();
         }
 
+
         // Summarize the results
         int totalProvided = 0;
         int totalProcessed = 0;

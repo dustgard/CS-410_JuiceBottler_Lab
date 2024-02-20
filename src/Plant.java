@@ -5,15 +5,17 @@ public class Plant implements Runnable {
     // How long do we want to run the juice processing
     public final int ORANGES_PER_BOTTLE = 3;
     private final String plantName;
-    private final Queue<Orange> fetched = new ConcurrentLinkedQueue<>();
-    private final Queue<Orange> peeled = new ConcurrentLinkedQueue<>();
-    private final Queue<Orange> squeezed = new ConcurrentLinkedQueue<>();
-    private final Queue<Orange> bottled = new ConcurrentLinkedQueue<>();
-    private final Queue<Orange> processed = new ConcurrentLinkedQueue<>();
+    private final OrangeBasket<Orange> fetched = new OrangeBasket<>();
+    private final OrangeBasket<Orange> peeled = new OrangeBasket<>();
+    private final OrangeBasket<Orange> squeezed = new OrangeBasket<>();
+    private final OrangeBasket<Orange> bottled = new OrangeBasket<>();
+    private final OrangeBasket<Orange> processed = new OrangeBasket<>();
     private int orangesProvided;
     private int orangesProcessed;
     private Thread[] plantWorkers;
     private boolean timeToWork;
+
+    private boolean finishOranges = true;
 
     Plant(String plant) {
         orangesProvided = 0;
@@ -46,38 +48,39 @@ public class Plant implements Runnable {
     public void run() {
 
         while(timeToWork){
+
             switch (Thread.currentThread().getName()){
                 case "fetcher":
                     Orange orange = new Orange();
-                    fetched.add(orange);
+                    fetched.put(orange);
                     orangesProvided++;
                     break;
                 case "peeler":
-                    Orange peelingOrange = fetched.poll();
+                    Orange peelingOrange = fetched.grab();
                     if (peelingOrange != null) {
                         peelingOrange.runProcess();
-                        peeled.add(peelingOrange);
+                        peeled.put(peelingOrange);
                     }
                     break;
                 case "squeezer":
-                    Orange squeezingOrange = peeled.poll();
+                    Orange squeezingOrange = peeled.grab();
                     if (squeezingOrange != null) {
                         squeezingOrange.runProcess();
-                        squeezed.add(squeezingOrange);
+                        squeezed.put(squeezingOrange);
                     }
                     break;
                 case "bottler":
-                    Orange bottlingOrange = squeezed.poll();
+                    Orange bottlingOrange = squeezed.grab();
                     if (bottlingOrange != null) {
                         bottlingOrange.runProcess();
-                        bottled.add(bottlingOrange);
+                        bottled.put(bottlingOrange);
                     }
                     break;
                 case "processor":
-                    Orange processingOrange = bottled.poll();
+                    Orange processingOrange = bottled.grab();
                     if (processingOrange != null) {
                         processingOrange.runProcess();
-                        processed.add(processingOrange);
+                        processed.put(processingOrange);
                         orangesProcessed++;
                     }
                     break;
@@ -124,6 +127,14 @@ public class Plant implements Runnable {
         return orangesProcessed % ORANGES_PER_BOTTLE;
     }
 
+    private static void delay(long time, String errMsg) {
+        long sleepTime = Math.max(1, time);
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+            System.err.println(errMsg);
+        }
+    }
 
 }
 
