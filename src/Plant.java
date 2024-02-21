@@ -13,7 +13,6 @@ public class Plant implements Runnable {
     private int orangesFetched = 0;
     private int orangesPeeled = 0;
     private int orangesSqueezed = 0;
-    private int orangesBottled = 0;
     private int orangesProcessed = 0;
     private Thread[] plantWorkers;
     private boolean timeToWork;
@@ -103,11 +102,10 @@ public class Plant implements Runnable {
                     if (bottlingOrange != null) {
                         bottlingOrange.runProcess();
                         bottled.put(bottlingOrange);
-                        orangesBottled++;
                     }
                     break;
                 case "processor":
-                case "processer2":
+                case "processor2":
                 case "processor3":
                     Orange processingOrange = bottled.grab();
                     if (processingOrange != null) {
