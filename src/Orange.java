@@ -1,15 +1,22 @@
+/**
+ * The Orange class
+ */
 public class Orange {
+
     private State state;
 
+    /**
+     * Constructor sets the state of the Orange to State.Fetched when the object
+     * is created.
+     */
     public Orange() {
         state = State.Fetched;
         doWork();
     }
 
-    public State getState() {
-        return state;
-    }
-
+    /**
+     *
+     */
     public void runProcess() {
         // Don't attempt to process an already completed orange
         if (state == State.Processed) {
@@ -19,6 +26,9 @@ public class Orange {
         state = state.getNext();
     }
 
+    /**
+     *
+     */
     private void doWork() {
         // Sleep for the amount of time necessary to do the work
         try {
@@ -28,6 +38,11 @@ public class Orange {
         }
     }
 
+    public State getState(){ return state;}
+
+    /**
+     *
+     */
     public enum State {
         Fetched(15),
         Peeled(38),
@@ -39,10 +54,19 @@ public class Orange {
 
         final int timeToComplete;
 
+        /**
+         *
+         * @param timeToComplete
+         */
         State(int timeToComplete) {
             this.timeToComplete = timeToComplete;
         }
 
+
+        /**
+         *
+         * @return
+         */
         State getNext() {
             int currIndex = this.ordinal();
             if (currIndex >= finalIndex) {

@@ -66,7 +66,7 @@ Setting up:
 
     GitHub's Juice Bottler application cloning:
     Ensure git is installed on your machine through terminal:
-        MacOS: git -v
+        macOS: git -v
         Windows: git --version
     Clone repository:
         git clone https://github.com/dustgard/CS-410_JuiceBottler_Lab
@@ -91,4 +91,22 @@ Starting the application on IDE:
 
     Hit the play button and view results on the console.
 
-Installing Apache Ant
+Installing Apache Ant:
+
+    Instructions for install found at: https://ant.apache.org/manual/install.html
+    When testing successful installation pay action to setting path variables/environmental variables.
+
+    Possible error message after installing ant:
+
+        Examples of macOS error fixes:
+            After installing ant, move it to /usr/local/ using this
+            command mv /Users/admin/Downloads/apache-ant-1.9.4  /usr/local/
+            Now try to set environment variables using nano $HOME/.profile
+
+            Check below lines.
+            export PATH=$PATH:/usr/local/ant/bin/
+            export ANT_HOME=/usr/local/ant
+            export  JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0._71..jdk/Contents/Home/bin
+
+        Examples of Windows error fixes:
+            https://www.tutorialspoint.com/ant/ant_environment.htm

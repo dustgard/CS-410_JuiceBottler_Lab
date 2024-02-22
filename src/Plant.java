@@ -1,15 +1,20 @@
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * Plant class:
+ *
+ */
 public class Plant implements Runnable {
     // How long do we want to run the juice processing
     public final int ORANGES_PER_BOTTLE = 3;
     private final String plantName;
-    private final OrangeBasket<Orange> fetched = new OrangeBasket<>();
-    private final OrangeBasket<Orange> peeled = new OrangeBasket<>();
-    private final OrangeBasket<Orange> squeezed = new OrangeBasket<>();
-    private final OrangeBasket<Orange> bottled = new OrangeBasket<>();
-    private final OrangeBasket<Orange> processed = new OrangeBasket<>();
+    private final ConcurrentLinkedQueue<Orange> fetched = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Orange> peeled = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Orange> squeezed = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Orange> bottled = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Orange> processed = new ConcurrentLinkedQueue<>();
     private int orangesFetched = 0;
     private int orangesPeeled = 0;
     private int orangesSqueezed = 0;
@@ -17,19 +22,17 @@ public class Plant implements Runnable {
     private Thread[] plantWorkers;
     private boolean timeToWork;
 
+    /**
+     *
+     * @param plant
+     */
     Plant(String plant) {
         plantName = plant;
     }
 
-    private static void delay(long time, String errMsg) {
-        long sleepTime = Math.max(1, time);
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException e) {
-            System.err.println(errMsg);
-        }
-    }
-
+    /**
+     *
+     */
     public void startPlant() {
         plantWorkers = new Thread[11];
         plantWorkers[0] = new Thread(this, "fetcher");
@@ -53,6 +56,9 @@ public class Plant implements Runnable {
                 + "             " + new Timestamp(new Date().getTime()));
     }
 
+    /**
+     *
+     */
     public void stopPlant() {
         timeToWork = false;
         for (Thread worker : plantWorkers) {
@@ -68,49 +74,52 @@ public class Plant implements Runnable {
                 + "             " + new Timestamp(new Date().getTime()));
     }
 
+    /**
+     *
+     */
     public void run() {
 
         while (timeToWork) {
             switch (Thread.currentThread().getName()) {
                 case "fetcher":
                     Orange orange = new Orange();
-                    fetched.put(orange);
+                    fetched.add(orange);
                     orangesFetched++;
                     break;
                 case "peeler":
-                    Orange peelingOrange = fetched.grab();
+                    Orange peelingOrange = fetched.poll();
                     if (peelingOrange != null) {
                         peelingOrange.runProcess();
-                        peeled.put(peelingOrange);
+                        peeled.add(peelingOrange);
                         orangesPeeled++;
                     }
                     break;
                 case "squeezer":
                 case "squeezer2":
                 case "squeezer3":
-                    Orange squeezingOrange = peeled.grab();
+                    Orange squeezingOrange = peeled.poll();
                     if (squeezingOrange != null) {
                         squeezingOrange.runProcess();
-                        squeezed.put(squeezingOrange);
+                        squeezed.add(squeezingOrange);
                         orangesSqueezed++;
                     }
                     break;
                 case "bottler":
                 case "bottler2":
                 case "bottler3":
-                    Orange bottlingOrange = squeezed.grab();
+                    Orange bottlingOrange = squeezed.poll();
                     if (bottlingOrange != null) {
                         bottlingOrange.runProcess();
-                        bottled.put(bottlingOrange);
+                        bottled.add(bottlingOrange);
                     }
                     break;
                 case "processor":
                 case "processor2":
                 case "processor3":
-                    Orange processingOrange = bottled.grab();
+                    Orange processingOrange = bottled.poll();
                     if (processingOrange != null) {
                         processingOrange.runProcess();
-                        processed.put(processingOrange);
+                        processed.add(processingOrange);
                         orangesProcessed++;
                     }
                     break;
@@ -118,30 +127,58 @@ public class Plant implements Runnable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOrangesFetched() {
         return orangesFetched;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOrangesPeeled() {
         return orangesPeeled;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOrangesSqueezed() {
         return orangesSqueezed;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getProcessedOranges() {
         return orangesProcessed;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getBottlesOranges() {
         return orangesProcessed / ORANGES_PER_BOTTLE;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPlantName() {
         return plantName;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getWaste() {
         return orangesProcessed % ORANGES_PER_BOTTLE;
     }
