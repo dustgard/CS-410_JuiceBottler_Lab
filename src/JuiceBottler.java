@@ -64,13 +64,15 @@ public class JuiceBottler {
             int totalSqueezed = p.getOrangesSqueezed();
             int totalBottles = p.getBottlesOranges();
             int totalWasted = p.getWaste();
+            int efficiency = p.getEfficiency();
             System.out.println(p.getPlantName() + "\n"
                     + "     Total Fetched Oranges = " + totalProvided + "\n"
                     + "     Total Peeled Oranges = " + totalPeeled + "\n"
                     + "     Total Squeezed Oranges = " + totalSqueezed + "\n"
                     + "     Total Processed Oranges = " + totalProcessed + "\n"
                     + "     Total Bottles Created = " + totalBottles + "\n"
-                    + "     Total Wasted = " + totalWasted + "\n");
+                    + "     Total Wasted = " + totalWasted + "\n"
+                    + "     Plant efficiency = " + efficiency + "%");
         }
     }
 

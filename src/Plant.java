@@ -19,6 +19,8 @@ public class Plant implements Runnable {
     private int orangesPeeled = 0;
     private int orangesSqueezed = 0;
     private int orangesProcessed = 0;
+
+    private int totalWasted = 0;
     private Thread[] plantWorkers;
     private boolean timeToWork;
 
@@ -180,7 +182,16 @@ public class Plant implements Runnable {
      * @return
      */
     public int getWaste() {
-        return orangesProcessed % ORANGES_PER_BOTTLE;
+        int bottledWaste = orangesProcessed % ORANGES_PER_BOTTLE;
+        totalWasted = bottledWaste + (orangesFetched-orangesProcessed);
+        return totalWasted;
+    }
+
+    public int getEfficiency (){
+        int wastedCount = orangesFetched-totalWasted;
+        double efficiency = ((double) wastedCount / orangesFetched)*100;
+
+        return (int)efficiency;
     }
 
 }
