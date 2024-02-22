@@ -94,6 +94,8 @@ Starting the application on IDE:
 Installing Apache Ant:
 
     Instructions for install found at: https://ant.apache.org/manual/install.html
+    and https://www.tutorialspoint.com/ant/ant_environment.html
+
     When testing successful installation pay action to setting path variables/environmental variables.
 
     Possible error message after installing ant:
@@ -108,5 +110,4 @@ Installing Apache Ant:
             export ANT_HOME=/usr/local/ant
             export  JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0._71..jdk/Contents/Home/bin
 
-        Examples of Windows error fixes:
-            https://www.tutorialspoint.com/ant/ant_environment.htm
+
