@@ -60,7 +60,7 @@ Juice Bottler program design explanation:
 
 	Orange class:
 
-        1.
+        1. Changes state for orange object fetch, peeled, squeezed, bottled, processed
 
 Setting up:
 
