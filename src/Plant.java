@@ -1,28 +1,38 @@
+
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Plant class:
- *
+ * The Plant class: This class is used to control the state of the plant activities.
+ * It manages 11 worker threads that split the task of processing an orange into orange juice
+ * bottles for sale.
+ *         1. Creates a queue for each orange state:
+ *                  a.Accessed in synchronized fashion (thread safe).
+ *         2. Sets the number of oranges per bottle.
+ *         3. Creates 11 threads (workers that are created for grabbing an orange, changing the state,
+ *             and placing it in the next state queue).
+ *         4. Informs the JuiceBottler program that the workers are on the clock (Threads have started)
+ *             or off the clock (Threads are finished with tasks).
+ *         5. Stopping the workers after JuiceBottler program allotted work time has ended.
+ *         6. Keeping track of all production numbers per task.
  */
+
 public class Plant implements Runnable {
-    // How long do we want to run the juice processing
-    public final int ORANGES_PER_BOTTLE = 3;
     private final String plantName;
+    private boolean timeToWork;
+    public final int ORANGES_PER_BOTTLE = 3;
+    private int orangesFetched = 0;
+    private int orangesPeeled = 0;
+    private int orangesSqueezed = 0;
+    private int orangesProcessed = 0;
+    private int totalWasted = 0;
+    private Thread[] plantWorkers;
     private final ConcurrentLinkedQueue<Orange> fetched = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<Orange> peeled = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<Orange> squeezed = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<Orange> bottled = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<Orange> processed = new ConcurrentLinkedQueue<>();
-    private int orangesFetched = 0;
-    private int orangesPeeled = 0;
-    private int orangesSqueezed = 0;
-    private int orangesProcessed = 0;
-
-    private int totalWasted = 0;
-    private Thread[] plantWorkers;
-    private boolean timeToWork;
 
     /**
      *
@@ -187,13 +197,16 @@ public class Plant implements Runnable {
         return totalWasted;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getEfficiency (){
         int wastedCount = orangesFetched-totalWasted;
         double efficiency = ((double) wastedCount / orangesFetched)*100;
 
         return (int)efficiency;
     }
-
 }
 
 

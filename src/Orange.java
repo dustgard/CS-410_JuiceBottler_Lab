@@ -1,13 +1,18 @@
 /**
- * The Orange class
+ * The Orange class: This class is used to create an orange with the ability to
+ * change the state of the orange. This is simulating the process from grabbing an orange
+ * (the starting task), to the bottling stage (the ending task). The different stages
+ * take a set amount of time to change from one to another. This simulates the functioning
+ * of a real processing plants.
  */
 public class Orange {
 
     private State state;
 
     /**
-     * Constructor sets the state of the Orange to State.Fetched when the object
-     * is created.
+     * Constructor sets the state of the Orange to Fetched when the object
+     * is created. The doWork method is called to simulate the time it takes
+     * to grab an orange (create a new orange).
      */
     public Orange() {
         state = State.Fetched;
@@ -15,7 +20,10 @@ public class Orange {
     }
 
     /**
-     *
+     * The runProcess method checks to see if the state of the orange
+     * is already at the ending state (Processed). If it is not in
+     * the process state, it calls the doWork() and then changes the state of
+     * the orange to the next stage of completing (example: from Peeled to Squeezed).
      */
     public void runProcess() {
         // Don't attempt to process an already completed orange
@@ -27,7 +35,9 @@ public class Orange {
     }
 
     /**
-     *
+     * The doWork() handles the amount of time set in place to simulate the processing
+     * of the orange. Each state has a different amount of time to complete. This is
+     * simulated by causing the thread to sleep for that amount.
      */
     private void doWork() {
         // Sleep for the amount of time necessary to do the work
@@ -38,10 +48,20 @@ public class Orange {
         }
     }
 
-    public State getState(){ return state;}
+    /**
+     * getState() is used for testing the different states during the process
+     * to ensure that it is going into the correct queue and the runProcesses is
+     * function properly.
+     * @return the state that the oranges are currently in.
+     */
+    public State getState(){
+        return state;}
 
     /**
-     *
+     * The different states that the orange can be and the
+     * amount of time to change to that state. This is used in
+     * the doWork() to simulate the process time for each stage
+     * of the orange through to the bottling stage.
      */
     public enum State {
         Fetched(15),
@@ -51,7 +71,6 @@ public class Orange {
         Processed(1);
 
         private static final int finalIndex = State.values().length - 1;
-
         final int timeToComplete;
 
         /**
