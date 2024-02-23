@@ -2,7 +2,8 @@ Juice Bottle Lab
 
 Achieved Requirements:
 o	The program has three Plants (data parallelization)
-o	The Plants have 11 workers that only change one state of the orange depending on their job assignment (task parallelization).
+o	The Plants have 11 workers that only change one state of the orange depending
+        on their job assignment (task parallelization).
 o	The final project was committed and pushed up to GitHub via the command line.
 o	Documentation with instructions on how to clone and run the program.
 o	A UML diagram.
@@ -12,7 +13,10 @@ o	Extra Credit
 
 
 Challenges:
-	I found this lab very difficult because I had weak knowledge on how to implement multiple threads correctly. I originally tried to have my Plants
-	as threads with them managing multiple workers which was also threads. I created a new class for the workers but found problems with coordinating
-	the multiple levels of threads within each other. Another challenge I faced was working with synchronizing access to the multiple queues that I
+	I found this lab very difficult because I had weak knowledge on how to implement
+	multiple threads correctly. I originally tried to have my Plants
+	as threads with them managing multiple workers which was also threads.
+	I created a new class for the workers but found problems with coordinating
+	the multiple levels of threads within each other. Another challenge I faced
+	was working with synchronizing access to the multiple queues that I
 	created for each process state of the orange.

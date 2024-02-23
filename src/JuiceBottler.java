@@ -21,10 +21,8 @@
  */
 
 public class JuiceBottler {
-
     // How long do we want to run the juice processing.
     public static final long PROCESSING_TIME = 5 * 1000;
-
     // How many plants objects are going to be created.
     private static final int NUM_PLANTS = 3;
 

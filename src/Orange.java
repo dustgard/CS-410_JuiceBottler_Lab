@@ -74,7 +74,8 @@ public class Orange {
         final int timeToComplete;
 
         /**
-         *
+         * This is used to take the set time to complete parameter
+         * to each stage of processing orange.
          * @param timeToComplete
          */
         State(int timeToComplete) {
@@ -83,8 +84,9 @@ public class Orange {
 
 
         /**
-         *
-         * @return
+         * Changes to the next state by increasing the index number
+         * for the enum unless there is no other index spots left.
+         * @return The nex state of the enum State value + 1
          */
         State getNext() {
             int currIndex = this.ordinal();
