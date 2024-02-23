@@ -8,7 +8,8 @@ o	Documentation with instructions on how to clone and run the program.
 o	A UML diagram.
 o	Identified critical sections and shared data structures with comments describing what actions were taken.
 o	Extra Credit
-    	Using ANT for building and running the program through the command line.
+    -	Using ANT for building and running the program through the command line.
+
 
 Challenges:
 	I found this lab very difficult because I had weak knowledge on how to implement multiple threads correctly. I originally tried to have my Plants
